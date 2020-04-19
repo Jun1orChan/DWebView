@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dwebview_white">#ffffff</color>
+    <color name="dwebview_blue">#1D82DE</color>
+</resources>

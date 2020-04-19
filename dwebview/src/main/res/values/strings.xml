@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">DWebView</string>
+    <string name="dwebview_camera_permission_denied_tips" formatted="false">请在“设置-应用管理-%s-应用权限”选项中，允许%s访问相机和存储空间</string>
+    <string name="dwebview_video_permission_denied_tips" formatted="false">请在“设置-应用管理-%s-应用权限”选项中，允许%s访问相机、麦克风和存储空间</string>
+    <string name="dwebview_audio_permission_denied_tips" formatted="false">请在“设置-应用管理-%s-应用权限”选项中，允许%s访问麦克风和存储空间</string>
+    <string name="dwebview_location_permission_denied_tips" formatted="false">请在“设置-应用管理-%s-应用权限”选项中，允许%s使用定位服务</string>
+    <string name="dwebview_btn_text_denied_setting">去设置</string>
+    <string name="dwebview_btn_text_denied_cancel">取消</string>
+    <string name="dwebview_error">加载失败，刷新试试</string>
+    <string name="dwebview_refresh">点击刷新</string>
+    <string name="dwebview_ok">确定</string>
+    <string name="dwebview_cancel">取消</string>
+</resources>

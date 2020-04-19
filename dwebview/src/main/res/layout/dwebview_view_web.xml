@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/flContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/llErrorContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/dwebview_white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/dwebview_error"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dwebview_error"
+            android:textColor="#AA000000"
+            android:textSize="16sp"/>
+
+        <com.istrong.widget.view.AlphaTextView
+            android:id="@+id/tvRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/dwebview_shape_stroke_1"
+            android:paddingBottom="6dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="6dp"
+            android:text="@string/dwebview_refresh"
+            android:textColor="@color/dwebview_blue"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <org.jun1or.dwebview.wrapper.WebHorizenProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"/>
+</FrameLayout>
