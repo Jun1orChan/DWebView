@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.istrong.dwebview">
+          package="org.jun1or.dwebview">
 
     <application>
         <receiver

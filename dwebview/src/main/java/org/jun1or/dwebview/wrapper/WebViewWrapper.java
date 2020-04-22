@@ -17,7 +17,7 @@ import android.webkit.WebResourceResponse;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.istrong.dwebview.R;
+import org.jun1or.dwebview.R;
 import org.jun1or.dwebview.callback.WebViewActionHappenListener;
 import org.jun1or.dwebview.webview.DWebView;
 

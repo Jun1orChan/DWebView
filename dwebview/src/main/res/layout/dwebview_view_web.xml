@@ -32,7 +32,7 @@
             android:textColor="#AA000000"
             android:textSize="16sp"/>
 
-        <com.istrong.widget.view.AlphaTextView
+        <org.jun1or.widget.view.AlphaTextView
             android:id="@+id/tvRefresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

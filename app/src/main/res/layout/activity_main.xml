@@ -38,28 +38,6 @@
         android:text="error test"
         android:textAllCaps="false"/>
 
-    <Button
-        android:id="@+id/noPreload"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="NoPreload"
-        android:textAllCaps="false"/>
 
-    <Button
-        android:id="@+id/preload"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Preload"
-        android:textAllCaps="false"/>
-
-    <Button
-        android:id="@+id/normalWebView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="normalWebView"
-        android:textAllCaps="false"/>
 </LinearLayout>
 

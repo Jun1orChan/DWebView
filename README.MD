@@ -9,16 +9,10 @@
 
 ## 引用
 
-1.在根目录build.gradle文件中添加
+1.项目build.gradle文件中添加
 
 ```gradle
-  
- ```
-
-2.项目build.gradle文件中添加
-
-```gradle
-
+    implementation 'org.jun1or.baselib:dwebview:1.0.0'
  ```
 
 ## 使用方法
@@ -66,14 +60,8 @@
 
 可以参考demo中：AddJSObjectFragment。
 
-3.WebView预加载策略（导致内存泄漏，慎用）
 
-- 创建新的Fragment，继承WebFragment；
-- 复写getWebViewWrapper()，传入预加载的WebViewWrapper
-- 可以参考demo中MainActivity中preload单击事件、WebFragmentPreloadActivity、PreloadWebFragment。
-
-
-4.如果有使用input标签进行选择图片
+3.如果有使用input标签进行选择图片
 
 - 先进行初始化图片加载器
 
@@ -158,11 +146,6 @@
 <input type="file" accept="image/*,video/*,audio/*" capture="camcorder">
 ```
 
-## 注意事项
-
-- ECloud-Android最低版本支持：5.0，为了保证兼容性，尽量少用css3。
-- 截图来源于 https://blog.csdn.net/yu280265067/article/details/73379145
-![image.png](http://wiki.istrongcloud.com/Images/3580b8e6/738ee43f/Images/291daf0c-9ba1-4e54-b29d-1bd9f47c7860.png)
 
 ## 版本记录
 

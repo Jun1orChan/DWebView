@@ -34,18 +34,19 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.istrong.dialog.ListDialog;
-import com.istrong.dialog.MaterialDialog;
-import com.istrong.dialog.listener.OnItemClickListener;
-import com.istrong.dwebview.R;
+import org.jun1or.dialog.ListDialog;
+import org.jun1or.dialog.MaterialDialog;
+import org.jun1or.dialog.listener.OnItemClickListener;
+import org.jun1or.dwebview.R;
 import org.jun1or.dwebview.callback.JavascriptCloseWindowListener;
 import org.jun1or.dwebview.callback.OnWebViewListener;
 import org.jun1or.dwebview.callback.OpenFileChooserCallback;
 import org.jun1or.dwebview.wrapper.WebViewUtil;
 import org.jun1or.dwebview.wrapper.WebViewWrapper;
-import com.istrong.util.AppUtil;
-import com.istrong.util.SPUtil;
-import com.istrong.util.StorageUtil;
+import org.jun1or.util.AppUtil;
+import org.jun1or.util.SPUtil;
+import org.jun1or.util.StorageUtil;
+
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 
@@ -213,7 +214,7 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
                         @Override
                         public void onAction(List<String> data) {
                             callback.invoke(origin, false, true);
-                            showPermissionDeniedDialog(String.format(getString(R.string.dwebview_location_permission_denied_tips), AppUtil.getAppName(getActivity()), AppUtil.getAppName(getActivity())));
+                            showPermissionDeniedDialog(String.format(mContext.getString(R.string.dwebview_location_permission_denied_tips), AppUtil.getAppName(getActivity()), AppUtil.getAppName(getActivity())));
                         }
                     }).start();
 

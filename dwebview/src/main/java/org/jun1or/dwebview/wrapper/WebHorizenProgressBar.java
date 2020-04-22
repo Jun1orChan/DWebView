@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
-import com.istrong.util.DisplayUtil;
+import org.jun1or.util.DisplayUtil;
 
 
 /**

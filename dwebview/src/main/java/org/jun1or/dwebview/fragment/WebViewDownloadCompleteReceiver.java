@@ -8,8 +8,8 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 
-import com.istrong.util.AppUtil;
-import com.istrong.util.SPUtil;
+import org.jun1or.util.AppUtil;
+import org.jun1or.util.SPUtil;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 
