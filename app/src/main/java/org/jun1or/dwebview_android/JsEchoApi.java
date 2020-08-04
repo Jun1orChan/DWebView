@@ -4,10 +4,10 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 
-import org.jun1or.dwebview.callback.CompletionHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jun1or.dwebview.callback.CompletionHandler;
 
 /**
  * Created by du on 16/12/31.

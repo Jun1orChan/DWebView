@@ -10,4 +10,5 @@
     <string name="dwebview_refresh">点击刷新</string>
     <string name="dwebview_ok">确定</string>
     <string name="dwebview_cancel">取消</string>
+    <string name="dwebview_ssl_error_tips">该网址证书不受信任，确定继续访问？</string>
 </resources>

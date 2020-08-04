@@ -6,11 +6,12 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator;
 
 import org.jun1or.util.DisplayUtil;
 
@@ -21,7 +22,10 @@ import org.jun1or.util.DisplayUtil;
 
 public class WebHorizenProgressBar extends View {
 
-    public static final float STATE_WAITING_PERCENT = 0.8f;//停在等待的百分比节点
+    /**
+     * 停在等待的百分比节点
+     */
+    public static final float STATE_WAITING_PERCENT = 0.8f;
     public static final float DEFAULT_HEIGHT = 3;
 
 
@@ -94,8 +98,9 @@ public class WebHorizenProgressBar extends View {
     public void start() {
         setVisibility(VISIBLE);
         setAlpha(1f);
-        if (mValueAnimator != null)
+        if (mValueAnimator != null) {
             mValueAnimator.cancel();
+        }
         mCurrentStopX = 0.0f;
         mValueAnimator = ValueAnimator.ofFloat(0, 1);
         mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -118,8 +123,9 @@ public class WebHorizenProgressBar extends View {
     }
 
     public void stop() {
-        if (getVisibility() == GONE || mValueAnimator == null || mStopValueAnimator != null)
+        if (getVisibility() == GONE || mValueAnimator == null || mStopValueAnimator != null) {
             return;
+        }
         mValueAnimator.cancel();
         //计算剩余像素长度
         final float remainWidth = getWidth() - mCurrentStopX;
@@ -164,6 +170,9 @@ public class WebHorizenProgressBar extends View {
     }
 
     public interface OnProgressStopFinishedListener {
+        /**
+         * 当进度结束
+         */
         void onProgressStopFinished();
     }
 
@@ -172,9 +181,11 @@ public class WebHorizenProgressBar extends View {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         getHandler().removeCallbacksAndMessages(null);
-        if (mValueAnimator != null)
+        if (mValueAnimator != null) {
             mValueAnimator.cancel();
-        if (mStopValueAnimator != null)
+        }
+        if (mStopValueAnimator != null) {
             mStopValueAnimator.cancel();
+        }
     }
 }

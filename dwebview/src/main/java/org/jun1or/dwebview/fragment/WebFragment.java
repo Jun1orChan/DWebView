@@ -1,6 +1,5 @@
 package org.jun1or.dwebview.fragment;
 
-import android.Manifest;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,10 +13,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +29,18 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+
+
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
+import com.yanzhenjie.permission.runtime.PermissionDef;
+
 import org.jun1or.dialog.ListDialog;
 import org.jun1or.dialog.MaterialDialog;
 import org.jun1or.dialog.listener.OnItemClickListener;
@@ -44,11 +51,7 @@ import org.jun1or.dwebview.callback.OpenFileChooserCallback;
 import org.jun1or.dwebview.wrapper.WebViewUtil;
 import org.jun1or.dwebview.wrapper.WebViewWrapper;
 import org.jun1or.util.AppUtil;
-import org.jun1or.util.SPUtil;
 import org.jun1or.util.StorageUtil;
-
-import com.yanzhenjie.permission.Action;
-import com.yanzhenjie.permission.AndPermission;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -62,7 +65,8 @@ import static android.content.Context.DOWNLOAD_SERVICE;
  */
 public class WebFragment extends Fragment implements JavascriptCloseWindowListener, OpenFileChooserCallback, DownloadListener {
 
-    private static boolean sAllowOnPauseExecuteJs = false;//默认不允许
+    //默认不允许
+    private static boolean sAllowOnPauseExecuteJs = false;
     public static final int REQUEST_CODE_ALL = 0x2001;
     public static final int REQUEST_CODE_TAKEAUDIO = 0x3001;
     public static final int REQUEST_CODE_TAKEPHOTO = 0x4001;
@@ -78,7 +82,6 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
     private final String CAPTURE_VIDEO = "录制视频";
     private final String CAPTURE_AUDIO = "音频录制";
     private final String FROM_ALBUM = "手机相册";
-//    private WebViewDownloadCompleteReceiver mWebViewDownloadCompleteReceiver;
 
     private ValueCallback<Uri> mFilePathCallback;
     private ValueCallback<Uri[]> mFilePathCallbackForAndroid5;
@@ -108,11 +111,6 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // 使用DownloadCompleteReceiver监听下载完成广播
-//        mWebViewDownloadCompleteReceiver = new WebViewDownloadCompleteReceiver();
-//        IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-//        getActivity().registerReceiver(mWebViewDownloadCompleteReceiver, intentFilter);
     }
 
     private void initViews(ViewGroup viewGroup) {
@@ -130,8 +128,9 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
         mWebViewWrapper.getWebView().setWebChromeClient(mWebChromeClient);
         mWebViewWrapper.getWebView().setWebViewClient(mWebViewClient);
         mWebViewWrapper.getWebView().setDownloadListener(this);
-        if (getArguments().getInt(PROGRESSBAR_COLOR, -1) != -1)
+        if (getArguments().getInt(PROGRESSBAR_COLOR, -1) != -1) {
             mWebViewWrapper.getWebHorizenProgressBar().setColor(getArguments().getInt(PROGRESSBAR_COLOR));
+        }
     }
 
     public WebViewWrapper getWebViewWrapper() {
@@ -142,7 +141,6 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//            Log.e("TAG", "===" + url);
             if (url.startsWith("http://") || url.startsWith("https://")) {
                 return false;
             }
@@ -152,7 +150,6 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
                 startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
-//                showTipsDialog("调用失败！");
             }
             return true;
         }
@@ -160,17 +157,33 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-//            Log.e("TAG", "===" + request.getUrl().toString());
             return shouldOverrideUrlLoading(view, request.getUrl().toString());
         }
 
         @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-//            super.onReceivedSslError(view, handler, error);
-            handler.proceed();//信任所有证书
+        public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
+            //提示用户
+            final MaterialDialog sslErrorTipsDialog = new MaterialDialog();
+            sslErrorTipsDialog.content(view.getContext().getString(R.string.dwebview_ssl_error_tips))
+                    .btnText(view.getContext().getString(R.string.dwebview_cancel), view.getContext().getString(R.string.dwebview_ok))
+                    .btnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            sslErrorTipsDialog.dismiss();
+                            handler.cancel();
+                        }
+                    }, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            sslErrorTipsDialog.dismiss();
+                            //信任所有证书
+                            handler.proceed();
+                        }
+                    })
+                    .show(getChildFragmentManager());
         }
-
     };
+
 
     private WebChromeClient mWebChromeClient = new WebChromeClient() {
 
@@ -203,7 +216,7 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
         public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
             AndPermission.with(mContext)
                     .runtime()
-                    .permission(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    .permission(Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION)
                     .onGranted(new Action<List<String>>() {
                         @Override
                         public void onAction(List<String> data) {
@@ -259,8 +272,9 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
         @Override
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
-            if (title.startsWith("data:text/html"))
+            if (title.startsWith("data:text/html")) {
                 return;
+            }
             if (getActivity() != null && getActivity() instanceof OnWebViewListener) {
                 ((OnWebViewListener) getActivity()).onReceiveTitle(title);
             }
@@ -273,8 +287,9 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
     };
 
     private void showTipsDialog(String msg) {
-        if (getActivity() == null)
+        if (getActivity() == null) {
             return;
+        }
         MaterialDialog tipsDialog = new MaterialDialog();
         tipsDialog
                 .content(msg)
@@ -283,8 +298,9 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
     }
 
     private void showConfirmDialog(String message, final JsResult result) {
-        if (getActivity() == null)
+        if (getActivity() == null) {
             return;
+        }
         final MaterialDialog confirmDialog = new MaterialDialog();
         confirmDialog
                 .content(message)
@@ -306,18 +322,17 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
     }
 
     public boolean canGoBack() {
-//        for (int i = 0; i < mWebViewWrapper.getWebView().copyBackForwardList().getSize(); i++) {
-//            Log.e("TAG", "====" + mWebViewWrapper.getWebView().copyBackForwardList().getItemAtIndex(i).getUrl());
-//        }
-        if (mWebViewWrapper == null)
+        if (mWebViewWrapper == null) {
             return false;
-        else
+        } else {
             return mWebViewWrapper.canGoBack();
+        }
     }
 
     public void goBack() {
-        if (mWebViewWrapper != null)
+        if (mWebViewWrapper != null) {
             mWebViewWrapper.goBack();
+        }
 //        Log.e("TAG", mWebViewWrapper.getWebView().copyBackForwardList().getSize() + "=====");
     }
 
@@ -325,16 +340,18 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
     public void onDestroyView() {
 //        if (getActivity() != null)
 //            getActivity().unregisterReceiver(mWebViewDownloadCompleteReceiver);
-        if (mWebViewWrapper != null)
+        if (mWebViewWrapper != null) {
             mWebViewWrapper.removeWebView();
+        }
         mMainHandler.removeCallbacksAndMessages(null);
         super.onDestroyView();
     }
 
     @Override
     public boolean onClose() {
-        if (getActivity() != null)
+        if (getActivity() != null) {
             getActivity().finish();
+        }
         return false;
     }
 
@@ -352,12 +369,14 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
         String acceptType = "";
         if (fileChooserParams.getAcceptTypes() != null && fileChooserParams.getAcceptTypes().length > 0) {
             for (int i = 0; i < fileChooserParams.getAcceptTypes().length; i++) {
-                if (TextUtils.isEmpty(fileChooserParams.getAcceptTypes()[i]))
+                if (TextUtils.isEmpty(fileChooserParams.getAcceptTypes()[i])) {
                     continue;
+                }
                 if (!TextUtils.isEmpty(acceptType)) {
                     acceptType += ";" + fileChooserParams.getAcceptTypes()[i];
-                } else
+                } else {
                     acceptType = fileChooserParams.getAcceptTypes()[i];
+                }
             }
         }
         actionByAcceptType(acceptType, fileChooserParams.isCaptureEnabled());
@@ -380,16 +399,19 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
             itemList.add(CAPTURE_AUDIO);
         }
         if (acceptType.contains(MIMETYPE_IMAGE)) {
-            if (!itemList.contains(CAPTURE_IMAGE))
+            if (!itemList.contains(CAPTURE_IMAGE)) {
                 itemList.add(CAPTURE_IMAGE);
+            }
         }
         if (acceptType.contains(MIMETYPE_VIDEO)) {
-            if (!itemList.contains(CAPTURE_VIDEO))
+            if (!itemList.contains(CAPTURE_VIDEO)) {
                 itemList.add(CAPTURE_VIDEO);
+            }
         }
         if (acceptType.contains(MIMETYPE_AUDIO)) {
-            if (!itemList.contains(CAPTURE_AUDIO))
+            if (!itemList.contains(CAPTURE_AUDIO)) {
                 itemList.add(CAPTURE_AUDIO);
+            }
         }
         if (itemList.size() == 0) {
             startFileChooser(acceptType, REQUEST_CODE_ALL);
@@ -414,8 +436,9 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
                 public void onItemClick(int i) {
                     mIsChoice = true;
                     startCapture(itemList.get(i));
-                    if (mTypeChoiceDialog != null)
+                    if (mTypeChoiceDialog != null) {
                         mTypeChoiceDialog.dismiss();
+                    }
                 }
             };
             mMainHandler.post(new Runnable() {
@@ -429,28 +452,32 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
 
     private void startCapture(String captureName) {
         if (captureName.contains(CAPTURE_IMAGE)) {
-            requestPermission(getTakePhotoRunnable(), String.format(getString(R.string.dwebview_camera_permission_denied_tips), AppUtil.getAppName(getActivity()), AppUtil.getAppName(getActivity())),
-                    Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            requestPermission(getTakePhotoRunnable(), String.format(getString(R.string.dwebview_camera_permission_denied_tips),
+                    AppUtil.getAppName(getActivity()), AppUtil.getAppName(getActivity())),
+                    Permission.CAMERA, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE);
         } else if (captureName.contains(CAPTURE_VIDEO)) {
-            requestPermission(getTakeVideoRunnable(), String.format(getString(R.string.dwebview_video_permission_denied_tips), AppUtil.getAppName(getActivity()), AppUtil.getAppName(getActivity())),
-                    Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            requestPermission(getTakeVideoRunnable(), String.format(getString(R.string.dwebview_video_permission_denied_tips),
+                    AppUtil.getAppName(getActivity()), AppUtil.getAppName(getActivity())),
+                    Permission.CAMERA, Permission.RECORD_AUDIO, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE);
         } else if (captureName.contains(CAPTURE_AUDIO)) {
             requestPermission(getTakeAudioRunnable(),
                     String.format(getString(R.string.dwebview_audio_permission_denied_tips), AppUtil.getAppName(getActivity()), AppUtil.getAppName(getActivity())),
-                    Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    Permission.CAMERA, Permission.RECORD_AUDIO, Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE);
         }
     }
 
     private void showTypeChoiceDialog(final CharSequence[] itemArray, OnItemClickListener onItemClickListener) {
-        if (mTypeChoiceDialog == null)
+        if (mTypeChoiceDialog == null) {
             mTypeChoiceDialog = new ListDialog();
+        }
         mTypeChoiceDialog.itemArray(itemArray)
                 .itemClickListener(onItemClickListener)
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        if (!mIsChoice)
+                        if (!mIsChoice) {
                             sendFile2Web(null);
+                        }
                         mIsChoice = false;
                     }
                 });
@@ -469,8 +496,9 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
                 } else {
                     startCapture(itemList.get(i));
                 }
-                if (mTypeChoiceDialog != null)
+                if (mTypeChoiceDialog != null) {
                     mTypeChoiceDialog.dismiss();
+                }
             }
         };
         mMainHandler.post(new Runnable() {
@@ -498,7 +526,6 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
             photoFile.mkdirs();
         }
         mTakePhotoFile = new File(photoFile, "IMG" + System.currentTimeMillis() + ".png");
-//        Log.e("TAG", "====" + photo.getAbsolutePath());
         Uri takePhotoUri;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             takePhotoUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".fileprovider", mTakePhotoFile);
@@ -528,8 +555,9 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
         } catch (Exception e) {
             sendFile2Web(null);
             e.printStackTrace();
-            if (getActivity() != null)
+            if (getActivity() != null) {
                 Toast.makeText(getActivity(), "打开视频录制失败！", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -553,7 +581,7 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
         }
     }
 
-    private void requestPermission(final Runnable runnable, final String deniedTip, String... permissions) {
+    private void requestPermission(final Runnable runnable, final String deniedTip, @NonNull @PermissionDef String... permissions) {
         AndPermission.with(this)
                 .runtime()
                 .permission(permissions)
@@ -578,12 +606,13 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        if (!TextUtils.isEmpty(acceptType))
+        if (!TextUtils.isEmpty(acceptType)) {
             i.setType(acceptType);
+        }
         if (getActivity() != null) {
-            if (AppUtil.isIntentAvailable(getActivity(), i))
+            if (AppUtil.isIntentAvailable(getActivity(), i)) {
                 startActivityForResult(Intent.createChooser(i, "文件选择"), requestCode);
-            else {
+            } else {
                 Toast.makeText(getActivity(), "未找到相关选择器！", Toast.LENGTH_SHORT).show();
                 sendFile2Web(null);
             }
@@ -613,25 +642,17 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
         }
     }
 
-//    private void goToMediaSelectActivity(String title, int requestCode) {
-//        ImageConfig config = new ImageConfig.Builder()
-//                .title(title)
-//                .multiSelect(false)
-//                .build();
-//        ISNav.getInstance().toImageSelectActivity(this, config, requestCode);
-//
-//    }
-
     private void sendFile2Web(Uri fileUri) {
         if (mFilePathCallback != null) {
             mFilePathCallback.onReceiveValue(fileUri);
             mFilePathCallback = null;
         } else if (mFilePathCallbackForAndroid5 != null) {
             try {
-                if (fileUri != null)
+                if (fileUri != null) {
                     mFilePathCallbackForAndroid5.onReceiveValue(new Uri[]{fileUri});
-                else
+                } else {
                     mFilePathCallbackForAndroid5.onReceiveValue(null);
+                }
                 mFilePathCallbackForAndroid5 = null;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -685,7 +706,6 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
 //        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE);
         // 设置下载文件保存的路径和文件名
         String fileName = URLUtil.guessFileName(url, contentDisposition, mimeType);
-//        Log.e("fileName:{}", fileName);
         /**
          * 目录: Android -> data -> xxx.xxx.xxx -> files -> Download -> dxtj.apk
          * 这个文件是你的应用所专用的,软件卸载后，下载的文件将随着卸载全部被删除
@@ -694,14 +714,13 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
         final DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE);
         // 添加一个下载任务
         long downloadId = downloadManager.enqueue(request);
-        SPUtil.put(getActivity(), WebViewDownloadCompleteReceiver.WEBVIEW_DOWNLOADID, downloadId);
 //        Log.e("downloadId:{}", downloadId + "");
     }
 
     private void showPermissionDeniedDialog(String tipMsg) {
-        if (getActivity() == null)
+        if (getActivity() == null) {
             return;
-
+        }
         final MaterialDialog audioPermissionDeniedDialog = new MaterialDialog();
         audioPermissionDeniedDialog
                 .content(tipMsg)
@@ -727,8 +746,9 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
         super.onResume();
         if (mWebViewWrapper != null) {
             mWebViewWrapper.getWebView().onResume();
-            if (!sAllowOnPauseExecuteJs)
+            if (!sAllowOnPauseExecuteJs) {
                 mWebViewWrapper.getWebView().resumeTimers();
+            }
         }
     }
 
@@ -736,8 +756,9 @@ public class WebFragment extends Fragment implements JavascriptCloseWindowListen
     public void onPause() {
         if (mWebViewWrapper != null) {
             mWebViewWrapper.getWebView().onPause();
-            if (!sAllowOnPauseExecuteJs)
+            if (!sAllowOnPauseExecuteJs) {
                 mWebViewWrapper.getWebView().pauseTimers();
+            }
         }
         super.onPause();
     }

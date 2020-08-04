@@ -6,6 +6,9 @@ import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+/**
+ * @author cwj
+ */
 public class WebViewUtil {
 
     public static void generalSetting(WebView webView) {
@@ -19,7 +22,8 @@ public class WebViewUtil {
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setAllowFileAccess(false);
         settings.setAppCacheEnabled(true);
-        settings.setAppCacheMaxSize(1024 * 1024 * 50);// 设置缓冲大小
+        // 设置缓冲大小
+        settings.setAppCacheMaxSize(1024 * 1024 * 50);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
         settings.setAppCachePath(webView.getContext().getDir("cache", Context.MODE_PRIVATE).getPath());
         settings.setLoadWithOverviewMode(true);

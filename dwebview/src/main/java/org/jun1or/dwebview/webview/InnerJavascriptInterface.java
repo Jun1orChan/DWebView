@@ -2,21 +2,25 @@ package org.jun1or.dwebview.webview;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.Keep;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
-import org.jun1or.dwebview.callback.CompletionHandler;
-import org.jun1or.dwebview.callback.JavascriptCloseWindowListener;
-import org.jun1or.dwebview.callback.OnReturnValue;
+import androidx.annotation.Keep;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jun1or.dwebview.callback.CompletionHandler;
+import org.jun1or.dwebview.callback.JavascriptCloseWindowListener;
+import org.jun1or.dwebview.callback.OnReturnValue;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author cwj
+ */
 public class InnerJavascriptInterface {
 
     private static final String TAG = "JSBridge_TAG";
@@ -76,7 +80,6 @@ public class InnerJavascriptInterface {
             e.printStackTrace();
             return ret.toString();
         }
-
 
         Class<?> cls = jsb.getClass();
         boolean asyn = false;

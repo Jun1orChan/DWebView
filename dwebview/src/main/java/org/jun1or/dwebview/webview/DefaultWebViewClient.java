@@ -4,8 +4,6 @@ import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.view.KeyEvent;
 import android.webkit.ClientCertRequest;
 import android.webkit.HttpAuthHandler;
@@ -16,9 +14,15 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 import org.jun1or.dwebview.callback.UrlOverrideListener;
 import org.jun1or.dwebview.callback.WebViewActionHappenListener;
 
+/**
+ * @author cwj
+ */
 public class DefaultWebViewClient extends WebViewClient {
 
     private WebViewClient mProxyWebViewClient;
@@ -40,10 +44,12 @@ public class DefaultWebViewClient extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        if (mUrlOverrideListener != null)
+        if (mUrlOverrideListener != null) {
             mUrlOverrideListener.shouldOverrideUrlLoadingHappened(url);
-        if (mProxyWebViewClient != null)
+        }
+        if (mProxyWebViewClient != null) {
             return mProxyWebViewClient.shouldOverrideUrlLoading(view, url);
+        }
         return super.shouldOverrideUrlLoading(view, url);
     }
 
@@ -55,9 +61,9 @@ public class DefaultWebViewClient extends WebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-//        Log.e("TAG", "onPageStarted======" + url);
-        if (mWebViewActionHappenListener != null)
+        if (mWebViewActionHappenListener != null) {
             mWebViewActionHappenListener.onPageStartedHappened(url, favicon);
+        }
         if (mProxyWebViewClient != null) {
             mProxyWebViewClient.onPageStarted(view, url, favicon);
             return;
@@ -67,11 +73,12 @@ public class DefaultWebViewClient extends WebViewClient {
 
     @Override
     public void onPageFinished(WebView view, String url) {
-//        Log.e("TAG", "onPageFinished========" + url);
-        if (mWebViewActionHappenListener != null)
+        if (mWebViewActionHappenListener != null) {
             mWebViewActionHappenListener.onPageFinishedHappened(url);
-        if (mUrlOverrideListener != null)
+        }
+        if (mUrlOverrideListener != null) {
             mUrlOverrideListener.onPageFinishedHappened(url);
+        }
         if (mProxyWebViewClient != null) {
             mProxyWebViewClient.onPageFinished(view, url);
             return;
@@ -130,8 +137,9 @@ public class DefaultWebViewClient extends WebViewClient {
 
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-        if (mWebViewActionHappenListener != null)
+        if (mWebViewActionHappenListener != null) {
             mWebViewActionHappenListener.onReceivedErrorHappened(errorCode, description, failingUrl);
+        }
         if (mProxyWebViewClient != null) {
             mProxyWebViewClient.onReceivedError(view, errorCode, description, failingUrl);
             return;
@@ -142,8 +150,9 @@ public class DefaultWebViewClient extends WebViewClient {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-        if (mWebViewActionHappenListener != null)
+        if (mWebViewActionHappenListener != null) {
             mWebViewActionHappenListener.onReceivedErrorHappened(request, error);
+        }
         if (mProxyWebViewClient != null) {
             mProxyWebViewClient.onReceivedError(view, request, error);
             return;
@@ -154,8 +163,9 @@ public class DefaultWebViewClient extends WebViewClient {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-        if (mWebViewActionHappenListener != null)
+        if (mWebViewActionHappenListener != null) {
             mWebViewActionHappenListener.onReceivedHttpErrorHappened(request, errorResponse);
+        }
         if (mProxyWebViewClient != null) {
             mProxyWebViewClient.onReceivedHttpError(view, request, errorResponse);
             return;

@@ -1,11 +1,13 @@
 package org.jun1or.dwebview_android;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import org.jun1or.dwebview.fragment.WebFragment;
 import org.jun1or.dwebview.webview.DWebView;
+
 
 /**
  * 测试添加项目自定义通信方法

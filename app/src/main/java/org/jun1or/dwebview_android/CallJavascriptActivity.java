@@ -1,16 +1,15 @@
 package org.jun1or.dwebview_android;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONObject;
 import org.jun1or.dwebview.callback.OnReturnValue;
 import org.jun1or.dwebview.webview.DWebView;
 import org.jun1or.dwebview.wrapper.WebViewUtil;
-import com.istrong.dwebview_android.R;
-
-import org.json.JSONObject;
 
 public class CallJavascriptActivity extends AppCompatActivity implements View.OnClickListener {
 

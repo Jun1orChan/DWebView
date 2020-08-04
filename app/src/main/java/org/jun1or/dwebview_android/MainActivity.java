@@ -2,18 +2,18 @@ package org.jun1or.dwebview_android;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.jun1or.dwebview.fragment.WebFragment;
 import org.jun1or.dwebview.webview.DWebView;
 import org.jun1or.dwebview_android.glide.GlideApp;
 import org.jun1or.imgsel.ISNav;
 import org.jun1or.imgsel.callback.ImageLoader;
-
-import com.istrong.dwebview_android.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, WebFragmentActivity.class);
-                intent.putExtra("url", "https://m.dcdapp.com/motor/inapp/car_classify/index.html?native_open_camera=1&hide_bar=1");
+                intent.putExtra("url", "http://www.baidu.com");
                 startActivity(intent);
             }
         });

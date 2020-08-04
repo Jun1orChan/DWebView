@@ -12,7 +12,9 @@ public class CallInfo {
     private String method;
 
     CallInfo(String handlerName, int id, Object[] args) {
-        if (args == null) args = new Object[0];
+        if (args == null) {
+            args = new Object[0];
+        }
         data = new JSONArray(Arrays.asList(args)).toString();
         callbackId = id;
         method = handlerName;

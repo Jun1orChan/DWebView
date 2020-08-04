@@ -3,9 +3,6 @@ package org.jun1or.dwebview.wrapper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -17,6 +14,11 @@ import android.webkit.WebResourceResponse;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
+
 import org.jun1or.dwebview.R;
 import org.jun1or.dwebview.callback.WebViewActionHappenListener;
 import org.jun1or.dwebview.webview.DWebView;
@@ -24,6 +26,9 @@ import org.jun1or.dwebview.webview.DWebView;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author cwjF
+ */
 public class WebViewWrapper extends FrameLayout implements View.OnClickListener, WebViewActionHappenListener, WebHorizenProgressBar.OnProgressStopFinishedListener {
 
     private static final String ERROR_URL_START = "data:";
@@ -66,7 +71,7 @@ public class WebViewWrapper extends FrameLayout implements View.OnClickListener,
         mWebView = new DWebView(getContext());
         mWebView.setWebViewActionHappenListener(this);
         webViewContainer.addView(mWebView,
-                new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+                new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
 
@@ -90,9 +95,10 @@ public class WebViewWrapper extends FrameLayout implements View.OnClickListener,
     }
 
     public void removeWebView() {
-        if (mWebView == null)
+        if (mWebView == null) {
             return;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (mWebView.getParent() != null) {
                 ((ViewGroup) mWebView.getParent()).removeView(mWebView);
             }
@@ -138,14 +144,11 @@ public class WebViewWrapper extends FrameLayout implements View.OnClickListener,
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onReceivedHttpErrorHappened(WebResourceRequest request, WebResourceResponse errorResponse) {
-//        Log.e("TAG", "onReceivedHttpErrorHappened:description:" + errorResponse.getStatusCode() + "\nfailingUrl:" + request.getUrl());
         if (shouldIgnore(request)) {
             return;
         }
-        //        Log.e("TAG", "onReceivedHttpErrorHappened:");
         // 这个方法在6.0才出现
         int statusCode = errorResponse.getStatusCode();
-//            Log.e("TAG", "=======statusCode:" + statusCode);
         if (request.isForMainFrame()) {
             if (statusCode < 200 || statusCode >= 400) {
                 setErrorStatus(request.getUrl() + "");
@@ -167,8 +170,8 @@ public class WebViewWrapper extends FrameLayout implements View.OnClickListener,
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onReceivedErrorHappened(WebResourceRequest request, WebResourceError error) {
-//        Log.e("TAG", "onReceivedErrorHappened:description:" + error.getDescription() + "\nfailingUrl:" + request.getUrl());
-        if (request.isForMainFrame()//避免内嵌iframe导致的显示错误界面
+        //避免内嵌iframe导致的显示错误界面
+        if (request.isForMainFrame()
             /*|| error.getDescription().toString().equals(ERROR_INTERNET_DISCONNECTED)*/) {
             // 显示错误界面
             setErrorStatus("" + request.getUrl());
@@ -177,7 +180,6 @@ public class WebViewWrapper extends FrameLayout implements View.OnClickListener,
 
     @Override
     public void onReceivedErrorHappened(int errorCode, String description, String failingUrl) {
-//        Log.e("TAG", "description:" + description + "\nfailingUrl:" + failingUrl);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return;
         }
@@ -189,17 +191,16 @@ public class WebViewWrapper extends FrameLayout implements View.OnClickListener,
 
     @Override
     public void onPageStartedHappened(String url, Bitmap favicon) {
-//        Log.e("TAG", "onPageStartedHappened===" + url);
         if (!mWaittingFinishSet.contains(url)) {
             mWaittingFinishSet.add(url);
         }
-        if (!url.startsWith(ERROR_URL_START))
+        if (!url.startsWith(ERROR_URL_START)) {
             mWebHorizenProgressBar.start();
+        }
     }
 
     @Override
     public void onPageFinishedHappened(String url) {
-//        Log.e("TAG", "onPageFinishedHappened=============" + url);
         mWebHorizenProgressBar.stop();
         if (!mErrorUrlsSet.contains(url) && mWaittingFinishSet.contains(url)) {
             hideErrorLayout();
@@ -214,10 +215,5 @@ public class WebViewWrapper extends FrameLayout implements View.OnClickListener,
 
     @Override
     public void onProgressStopFinished() {
-//        Log.e("TAG", "=========onProgressStopFinished");
-//        if (mIsError) {
-//            showErrorLayout();
-//            mIsError = false;
-//        }
     }
 }

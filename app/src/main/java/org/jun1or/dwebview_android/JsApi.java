@@ -4,10 +4,10 @@ import android.os.CountDownTimer;
 import android.webkit.JavascriptInterface;
 
 
-import org.jun1or.dwebview.callback.CompletionHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jun1or.dwebview.callback.CompletionHandler;
 
 
 /**

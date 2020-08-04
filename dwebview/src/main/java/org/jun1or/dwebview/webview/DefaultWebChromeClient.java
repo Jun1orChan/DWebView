@@ -19,6 +19,7 @@ import android.webkit.WebView;
 import org.jun1or.dwebview.callback.OpenFileChooserCallback;
 import org.jun1or.dwebview.callback.WebViewActionHappenListener;
 
+
 public class DefaultWebChromeClient extends WebChromeClient {
 
     private WebChromeClient mWebChromeClient;
@@ -51,8 +52,9 @@ public class DefaultWebChromeClient extends WebChromeClient {
 
     @Override
     public void onReceivedTitle(WebView view, String title) {
-        if (mWebViewActionHappenListener != null)
+        if (mWebViewActionHappenListener != null) {
             mWebViewActionHappenListener.onReceivedTitleHappened(title);
+        }
         if (mWebChromeClient != null) {
             mWebChromeClient.onReceivedTitle(view, title);
         } else {
@@ -88,6 +90,7 @@ public class DefaultWebChromeClient extends WebChromeClient {
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @Override
     public void onShowCustomView(View view, int requestedOrientation,
                                  CustomViewCallback callback) {
         if (mWebChromeClient != null) {
@@ -160,8 +163,9 @@ public class DefaultWebChromeClient extends WebChromeClient {
 
         if (mWebChromeClient != null) {
             return mWebChromeClient.onJsBeforeUnload(view, url, message, result);
-        } else
+        } else {
             return super.onJsPrompt(view, url, message, defaultValue, result);
+        }
     }
 
     @Override
@@ -214,6 +218,7 @@ public class DefaultWebChromeClient extends WebChromeClient {
 
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
     public void onPermissionRequest(PermissionRequest request) {
         if (mWebChromeClient != null) {
             mWebChromeClient.onPermissionRequest(request);
@@ -268,15 +273,18 @@ public class DefaultWebChromeClient extends WebChromeClient {
 
     // For Android  > 4.1.1
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-        if (mOpenFileChooserCallback != null)
+        if (mOpenFileChooserCallback != null) {
             mOpenFileChooserCallback.openFileChooserCallBack(uploadMsg, acceptType, capture);
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
-                                     WebChromeClient.FileChooserParams fileChooserParams) {
-        if (mOpenFileChooserCallback != null)
+                                     FileChooserParams fileChooserParams) {
+        if (mOpenFileChooserCallback != null) {
             mOpenFileChooserCallback.openFileChooserCallBack(filePathCallback, fileChooserParams);
+        }
         return true;
     }
 }

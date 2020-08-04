@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 28
@@ -19,20 +19,18 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'org.jun1or.baselib:dialog:1.0.0'
-    implementation 'org.jun1or.baselib:util:1.0.0'
-    implementation 'org.jun1or.baselib:widget:1.0.0'
-    implementation('com.yanzhenjie:permission:2.0.0-rc12') {
-        exclude group: 'com.android.support'
-    }
+    implementation "androidx.appcompat:appcompat:1.1.0"
+    implementation 'org.jun1or.baselib:dialog:1.0.2'
+    implementation 'org.jun1or.baselib:util:1.0.1'
+    implementation 'org.jun1or.baselib:widget:1.0.1'
+    implementation 'com.yanzhenjie:permission:2.0.3'
 }
 //添加
 publish {
     userOrg = 'jun1or'//bintray.com用户名
     groupId = 'org.jun1or.baselib'//jcenter上的路径
     artifactId = 'dwebview'//项目名称
-    publishVersion = '1.0.0'//版本号
+    publishVersion = '1.0.1'//版本号
     desc = ''//描述，不重要
     website = 'https://github.com/Jun1orChan/DWebView'//网站，不重要
 }
